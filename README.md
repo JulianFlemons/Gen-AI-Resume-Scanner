@@ -6,6 +6,11 @@ An AI-powered resume scanner that analyzes resumes against job descriptions, pro
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.x-red?logo=streamlit)
 ![HuggingFace](https://img.shields.io/badge/HuggingFace-Mistral--7B-yellow?logo=huggingface)
 ![License](https://img.shields.io/badge/License-MIT-green)
+<img width="1434" height="854" alt="Screenshot 2026-02-19 at 2 50 02 PM" src="https://github.com/user-attachments/assets/223d89d3-a0cb-4f1f-866c-1be0ef0dcb52" />
+<img width="1439" height="853" alt="Screenshot 2026-02-19 at 2 49 52 PM" src="https://github.com/user-attachments/assets/844f85f5-1542-427e-9e6d-fa910f0d4994" />
+<img width="1437" height="852" alt="Screenshot 2026-02-19 at 2 50 53 PM" src="https://github.com/user-attachments/assets/368c64d9-c82e-4f82-be05-0a0edf3dde40" />
+
+<img width="1435" height="804" alt="Screenshot 2026-02-19 at 2 53 43 PM" src="https://github.com/user-attachments/assets/a0237af8-97c8-4ba4-bf52-3fdd876fdd16" />
 
 ---
 
