@@ -1,5 +1,7 @@
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel, Field
+import os 
+from services.resume_extraction import extract_text_from_text_resume
 
 app = FastAPI(
     title = "ATS Resume Scanner",
@@ -64,7 +66,21 @@ async def analyze_resume(
             status_code=400,
             detail="Invalid file type. Only PDF and DOCX files are allowed.",
         )
+    
     file_content = await resume.read()
+    if not file_content:
+        raise HTTPException(
+            status_code=400,
+            detail="Uploaded file is empty.",
+        )
+    try:
+        extracted_text = extract_text_from_text_resume(file_content, os.path.splitext(resume.filename)[1].lower())
+    except Exception as e:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Error extracting text from resume: {str(e)}",
+        )
+    return {"message": "Resume analysis is not implemented yet."}
     # TODO: validate the file, extract resume text, and run the analysis services.
     raise HTTPException(
         status_code=501,
