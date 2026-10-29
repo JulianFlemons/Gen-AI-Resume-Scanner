@@ -1,7 +1,8 @@
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel, Field
 import os 
-from services.resume_extraction import extract_text_from_text_resume
+from app.services.resume_extraction import extract_text_from_text_resume
+from app.services.resume_analysis import compute_scores, parse_sections
 
 app = FastAPI(
     title = "ATS Resume Scanner",
@@ -20,9 +21,9 @@ def health():
 
 
 class CategoryScores(BaseModel):
-    skills: float = Field(ge=0, le=10)
-    experience: float = Field(ge=0, le=10)
-    education: float = Field(ge=0, le=10)
+    skills: float = Field(ge=0, le=100)
+    experience: float = Field(ge=0, le=100)
+    education: float = Field(ge=0, le=100)
 
 
 class Skills(BaseModel):
@@ -34,11 +35,11 @@ class AIAnalysis(BaseModel):
     summary: str
     strengths: list[str]
     improvements: list[str]
-    fit_rating: int = Field(ge=0, le=10)
+    fit_rating: int = Field(ge=0, le=100)
 
 
 class AnalyzeResponse(BaseModel):
-    overall_score: float = Field(ge=0, le=10)
+    overall_score: float = Field(ge=0, le=100)
     category_scores: CategoryScores
     skills: Skills
     ai_analysis: AIAnalysis
@@ -80,7 +81,31 @@ async def analyze_resume(
             status_code=400,
             detail=f"Error extracting text from resume: {str(e)}",
         )
-    return {"message": "Resume analysis is not implemented yet."}
+    if not extracted_text.strip():
+        raise HTTPException(
+            status_code=400,
+            detail="No text could be extracted from the resume.",
+        )
+    parsed_sections = parse_sections(extracted_text)
+    scores = compute_scores(parsed_sections, job_description)
+    return {
+    "overall_score": scores["overall_score"],
+    "category_scores": {
+        "skills": scores["skills_score"],
+        "experience": scores["experience_score"],
+        "education": scores["education_score"],
+    },
+    "skills": {
+        "matched": scores["skills_matched"],
+        "missing": scores["skills_missing"],
+    },
+    "ai_analysis": {
+        "summary": "AI analysis is not available yet.",
+        "strengths": [],
+        "improvements": [],
+        "fit_rating": scores["overall_score"],
+    },
+}
     # TODO: validate the file, extract resume text, and run the analysis services.
     raise HTTPException(
         status_code=501,
